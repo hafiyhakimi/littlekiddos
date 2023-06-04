@@ -65,10 +65,8 @@ jobs:
   deploy:
     permissions:
       contents: none
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
-    environment:
-      name: Development  # Set the environment name without single quotes
 
     steps:
       - name: Download artifact from build job
@@ -83,4 +81,10 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          images: |
+            .
+            !venv/
+
+      - name: Set deployment environment
+        run: echo "##[set-output name=webapp-url]https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
 
